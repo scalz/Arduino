@@ -189,7 +189,9 @@ typedef enum {
 	I_PONG					= 25,	//!< In return to ping, sent back to sender, payload incremental hop counter
 	I_REGISTRATION_REQUEST	= 26,	//!< Register request to GW
 	I_REGISTRATION_RESPONSE	= 27,	//!< Register response from GW
-	I_DEBUG					= 28	//!< Debug message
+	I_DEBUG					= 28,	//!< Debug message
+	I_SIGNAL_STRENGTH = 29,	//!< Device signal strength
+	I_TX_POWER_LEVEL = 30	//!< Device TX power level
 } mysensor_internal;
 
 

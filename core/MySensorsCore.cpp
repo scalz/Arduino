@@ -315,6 +315,22 @@ bool sendHeartbeat(const bool ack)
 #endif
 }
 
+bool sendSignalStrength(const int16_t value, const bool ack)
+{
+   // TODO : For the moment transportGetRSSI is not cross-radios yet. So, user need to feed the value by calling transportGetRSSI in sketch
+   // const int16_t signalStrength = transportGetRSSI();
+   // return _sendRoute(build(_msgTmp, GATEWAY_ADDRESS, NODE_SENSOR_ID, C_INTERNAL, I_SIGNAL_STRENGTH, ack).set(signalStrength));
+   return _sendRoute(build(_msgTmp, GATEWAY_ADDRESS, NODE_SENSOR_ID, C_INTERNAL, I_SIGNAL_STRENGTH, ack).set(value));
+}
+
+bool sendTXPowerLevel(const uint8_t value, const bool ack)
+{
+   // TODO : For the moment transportGetTxPower is not cross-radios yet. So, user need to feed the value by calling transportGetTxPower in sketch
+   // const uint8_t txPowerLevel = transportGetTxPower();
+   // return _sendRoute(build(_msgTmp, GATEWAY_ADDRESS, NODE_SENSOR_ID, C_INTERNAL, I_TX_POWER_LEVEL, ack).set(txPowerLevel));
+   return _sendRoute(build(_msgTmp, GATEWAY_ADDRESS, NODE_SENSOR_ID, C_INTERNAL, I_TX_POWER_LEVEL, ack).set(value));
+}
+
 bool present(const uint8_t childSensorId, const uint8_t sensorType, const char *description,
              const bool ack)
 {

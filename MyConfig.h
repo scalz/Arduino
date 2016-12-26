@@ -619,13 +619,25 @@
 ***********************************/
 
 /**
+* @def MY_DEBUG_VERBOSE_RFM69
+* @brief Enable MY_DEBUG_VERBOSE_RFM69 flag for verbose debug prints related to the RFM69 driver. Requires DEBUG to be enabled.
+*/
+//#define MY_DEBUG_VERBOSE_RFM69
+
+/**
+* @def MY_DEBUG_VERBOSE_RFM69_REGISTERS
+* @brief Enable MY_DEBUG_VERBOSE_RFM69_REGISTERS
+*/
+//#define MY_DEBUG_VERBOSE_RFM69_REGISTERS
+
+/**
  * @def MY_RFM69_FREQUENCY
- * @brief RFM69 frequency to use (RF69_433MHZ for 433MHz, RF69_868MHZ for 868MHz or RF69_915MHZ for 915MHz).
+ * @brief RFM69 frequency to use (RFM69_433MHZ for 433MHz, RFM69_868MHZ for 868MHz or RFM69_915MHZ for 915MHz).
  *
  * This must match the hardware version of the RFM69 radio.
  */
 #ifndef MY_RFM69_FREQUENCY
-#define MY_RFM69_FREQUENCY   RF69_868MHZ
+#define MY_RFM69_FREQUENCY   RFM69_868MHZ
 #endif
 
 /**
@@ -645,6 +657,29 @@
 #endif
 
 /**
+ * @def MY_RFM69_TX_POWER_DBM
+ * @brief Set TX power level, 0..31
+ */
+
+#ifndef MY_RFM69_TX_POWER_DBM
+#define MY_RFM69_TX_POWER_DBM (5) // default
+#endif
+
+/**
+ * @def MY_RFM69_ATC_TARGET_RSSI_DBM
+ * @brief MY_RFM69_ATC_TARGET_RSSI_DBM
+ */
+#ifndef MY_RFM69_ATC_TARGET_RSSI_DBM
+#define MY_RFM69_ATC_TARGET_RSSI_DBM	(-80)
+#endif
+
+/**
+ * @def MY_RFM69_ATC_MODE_DISABLED
+ * @brief MY_RFM69_ATC_MODE_DISABLED
+ */
+ //#define MY_RFM69_ATC_MODE_DISABLED
+
+/**
  * @def MY_RFM69_NETWORKID
  * @brief RFM69 Network ID. Use the same for all nodes that will talk to each other.
  */
@@ -653,35 +688,91 @@
 #endif
 
 /**
- * @def MY_RF69_IRQ_PIN
- * @brief RF69 IRQ pin.
+ * @def MY_RFM69_RST_PIN
+ * @brief RFM69 Reset pin.
  */
-#ifndef MY_RF69_IRQ_PIN
-#define MY_RF69_IRQ_PIN RF69_IRQ_PIN
+//#define MY_RFM69_RST_PIN 9
+
+/**
+ * @def MY_RFM69_IRQ_PIN
+ * @brief RFM69 IRQ pin.
+ */
+#ifndef MY_RFM69_IRQ_PIN
+#define MY_RFM69_IRQ_PIN RFM69_IRQ_PIN
 #endif
 
 /**
- * @def MY_RF69_SPI_CS
- * @brief RF69 SPI chip select pin.
+ * @def MY_RFM69_SPI_CS
+ * @brief RFM69 SPI chip select pin.
  */
-#ifndef MY_RF69_SPI_CS
-#define MY_RF69_SPI_CS RF69_SPI_CS
+#ifndef MY_RFM69_SPI_CS
+#define MY_RFM69_SPI_CS RFM69_SPI_CS
 #endif
 
 /**
- * @def MY_RF69_IRQ_NUM
- * @brief RF69 IRQ pin number.
+ * @def MY_RFM69_SPI_MAX_SPEED
+ * @brief MY_RFM69_SPI_MAX_SPEED to overrule default RFM69 SPI speed.
  */
-#ifndef MY_RF69_IRQ_NUM
-#if defined(ARDUINO_ARCH_ESP8266)
-#define MY_RF69_IRQ_NUM RF69_IRQ_PIN
-#else
-#define MY_RF69_IRQ_NUM RF69_IRQ_NUM
-#endif
-#endif
+//#define MY_RFM69_SPI_MAX_SPEED (4000000ul)
 
-// Enables RFM69 encryption (all nodes and gateway must have this enabled, and all must be personalized with the same AES key)
+/**
+ * @def MY_RFM69_ENABLE_ENCRYPTION
+ * Enables RFM69 encryption (all nodes and gateway must have this enabled, and all must be personalized with the same AES key)
+ */
 //#define MY_RFM69_ENABLE_ENCRYPTION
+
+/**
+ * @def MY_RFM69_ENABLE_LISTENMODE
+ * Enables RFM69 listen mode
+ * @brief Uncomment if you need listenmode. else comment it and save memory
+ */
+//#define MY_RFM69_ENABLE_LISTENMODE
+
+#if defined(MY_RFM69_ENABLE_LISTENMODE) && !defined(MY_RFM69_DEFAULT_LISTEN_RX_US)
+// By default, receive for 256uS in listen mode and idle for ~1s
+#define MY_RFM69_DEFAULT_LISTEN_RX_US 256
+#endif
+
+#if defined(MY_RFM69_ENABLE_LISTENMODE) && !defined(MY_RFM69_DEFAULT_LISTEN_IDLE_US)
+// By default, receive for 256uS in listen mode and idle for ~1s
+#define  MY_RFM69_DEFAULT_LISTEN_IDLE_US 1000000
+#endif
+
+
+/**
+ * @def MY_RFM69_BITRATE_MSB
+ * The bit rate. Most significant bits. Bitrate between the transmitter and the receiver must be better than 6.5. Refer to RFM69registers.h (L.153) for settings or http://www.semtech.com/apps/filedown/down.php?file=sx1231.pdf
+ * @brief Datarate value. Note : RFM69_FOSC(Hz)/MSB_LSBVALUE = Bitrate in kbits
+ */
+/**
+ * @def MY_RFM69_BITRATE_LSB
+ * The bit rate. Less significant bits. Bitrate between the transmitter and the receiver must be better than 6.5. Refer to RFM69registers.h (L.153) for settings or http://www.semtech.com/apps/filedown/down.php?file=sx1231.pdf
+ * @brief Datarate value. Note : RFM69_FOSC(Hz)/MSB_LSBVALUE = Bitrate in kbits
+ */
+#if !defined(MY_RFM69_BITRATE_MSB) || !defined(MY_RFM69_BITRATE_LSB) 
+#define MY_RFM69_BITRATE_MSB RFM69_BITRATEMSB_55555
+#define MY_RFM69_BITRATE_LSB RFM69_BITRATELSB_55555
+#endif
+
+/**
+ * @def MY_RFM69_CSMA_ADD_DELAY_BASE
+ * Before radio sending, random delay, to be sure that two nodes which were waiting for free channel, doesn't send at same time and collide
+ * The delay = MY_RFM69_CSMA_ADD_DELAY_BASE * random(1,MY_RFM69_CSMA_ADD_DELAY_COUNT)
+ * @brief Time value in ms. Default 50ms.
+ */
+#ifndef MY_RFM69_CSMA_ADD_DELAY_BASE
+#define MY_RFM69_CSMA_ADD_DELAY_BASE 0 
+#endif
+
+/**
+ * @def MY_RFM69_CSMA_ADD_DELAY_COUNT
+ * Before radio sending, random delay, to be sure that two nodes which were waiting for free channel, doesn't send at same time and collide
+ * The delay = MY_RFM69_CSMA_ADD_DELAY_BASE * random(1,MY_RFM69_CSMA_ADD_DELAY_COUNT)
+ * @brief unsigned 8bit counter. Default 10.
+ */
+#ifndef MY_RFM69_CSMA_ADD_DELAY_COUNT
+#define MY_RFM69_CSMA_ADD_DELAY_COUNT 0
+#endif
 
 /**********************************
 *  RFM95 driver defaults
@@ -946,6 +1037,8 @@
 #define MY_SIGNING_NODE_WHITELISTING {{.nodeId = GATEWAY_ADDRESS,.serial = {0x09,0x08,0x07,0x06,0x05,0x04,0x03,0x02,0x01}}}
 #define MY_RS485_HWSERIAL
 #define MY_IS_RFM69HW
+#define MY_RFM69_ATC_MODE_DISABLED
+#define MY_RFM69_RST_PIN
 #define MY_PARENT_NODE_IS_STATIC
 #define MY_REGISTRATION_CONTROLLER
 #define MY_TRANSPORT_UPLINK_CHECK_DISABLED

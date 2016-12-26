@@ -165,7 +165,6 @@ bool sendSketchInfo(const char *name, const char *version, const bool ack = fals
 */
 bool send(MyMessage &msg, const bool ack = false);
 
-
 /**
  * Send this nodes battery level to gateway.
  * @param level Level between 0-100(%)
@@ -181,6 +180,22 @@ bool sendBatteryLevel(const uint8_t level, const bool ack = false);
  * @return true Returns true if message reached the first stop on its way to destination.
  */
 bool sendHeartbeat(const bool ack = false);
+
+/**
+* Send this nodes signal strength to gateway.
+* @param level Signal strength can be rssi if the radio provide it, or another kind of calculation
+* @param ack Set this to true if you want destination node to send ack back to this node. Default is not to request any ack.
+* @return true Returns true if message reached the first stop on its way to destination.
+*/
+bool sendSignalStrength(const int16_t level, const bool ack = false);
+
+/**
+* Send this nodes TX power level to gateway.
+* @param level For instance, can be TX power level in dbm
+* @param ack Set this to true if you want destination node to send ack back to this node. Default is not to request any ack.
+* @return true Returns true if message reached the first stop on its way to destination.
+*/
+bool sendTXPowerLevel(const uint8_t level, const bool ack = false);
 
 /**
 * Requests a value from gateway or some other sensor in the radio network.
